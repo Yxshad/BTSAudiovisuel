@@ -1,0 +1,41 @@
+.lecteurVideo{
+    width: fit-content;
+    height: fit-content;
+    background: gray;
+    border-radius: 20px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.player{
+    width: 100%;
+    height: 100%;
+
+    max-width: 1000px;
+    max-height: 500px;
+}
+
+.colonnes{
+    display: flex;
+}
+
+.colonne-1,
+.colonne-2{
+    width: 50%;
+}
+
+.colonne-2{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.colonne-2 .btnVideo{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.colonne-2 .btnVideo .logo-btnvideo{
+    width: 50px;
+}

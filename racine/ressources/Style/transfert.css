@@ -1,0 +1,148 @@
+.colonnes{
+    display: flex;
+    align-items: stretch;
+}
+
+.colonne-1,
+.colonne-2{
+    width: 50%;
+}
+
+h1, h2{
+    text-align: center;
+}
+
+/* #region COLONNE DE GAUCHE*/
+
+.transferts{
+    border: 2px solid black;
+    border-radius: 40px;
+    padding: 40px;
+}
+
+.lignes{
+    display: flex;
+    flex-direction: column;
+}
+
+.ligne{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.ligne .fleches{
+    display: flex;
+    flex-direction: column;
+}
+
+.ligne .fleches a{
+    width: 20px;
+    cursor: pointer;
+}
+
+.ligne .fleches .fleche-haut{
+    rotate: -90deg;
+    transform: translate(0px, 4px);
+}
+
+.ligne .fleches .fleche-bas{
+    rotate: 90deg;
+}
+
+.ligne:first-of-type .fleche-haut,
+.ligne:last-of-type .fleche-bas{
+    display: none;
+}
+
+.ligne .imgVideo{
+    width: 50px;
+}
+
+.ligne .info{
+    display: flex;
+    flex-direction: column;
+}
+
+.ligne .info p{
+    margin: 0;
+}
+
+.ligne .info p.nomVideo{
+    font-size: 2em;
+}
+
+.progress{
+    display: flex;
+}
+
+.ligne .bouton .pause{
+    width: 40px;
+    display: block;
+}
+
+.commande{
+    transform: translateX(-50%);
+    left: 50%;
+    position: relative;
+    width: fit-content;
+}
+
+.btn{
+    display: block;
+    background: red;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn:hover{
+    transform: scale(1.05);
+}
+
+/* #endregion COLONNE DE GAUCHE*/
+
+div.symbole{
+    align-content: center;
+    font-size: 5em;
+    padding: 0 20px;
+}
+
+/* #region COLONNE DE DROITE */
+
+div.dates{
+    padding: 40px;
+    border-radius: 40px;
+    border: 2px solid black;
+}
+
+.colonne-2 .nomColonne{
+    font-weight: bold;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.colonne-2 .ligne{
+    display: block;
+}
+
+.colonne-2 .ligne::after{
+    content: "";
+    width: 80%;
+    height: 2px;
+    background: grey;
+    display: block;
+    margin: 0 10%;
+}
+
+.colonne-2 .ligne:last-of-type::after{
+    content: none;
+}
+
+.colonne-2 .ligne > div{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
