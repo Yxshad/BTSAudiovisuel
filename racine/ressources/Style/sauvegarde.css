@@ -1,0 +1,82 @@
+.colonnes{
+    display: flex;
+}
+
+.colonne-1,
+.colonne-2{
+    width: 50%;
+}
+
+.colonne-2{
+    border: 2px solid black;
+    border-radius: 20px;
+}
+
+h1, h2{
+    text-align: center;
+}
+
+.intervalSauvegarde{
+    display: flex;
+    gap: 20px;
+    align-items: center;;
+}
+
+.options{
+    margin-top: 10px;
+}
+
+.dateSauvegarde{
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+a.btn{
+    display: block;
+}
+
+a.btn.parametre,
+a.btn.manuelle{
+    width: 250px;
+    text-align: center;
+    margin: auto;
+    margin-top: 50px;
+    color: #fff;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+a.btn.parametre{
+    background: red;
+}
+
+a.btn.manuelle{
+    background: orange;
+    margin-top: 20px;
+}
+
+div.nomColonne{
+    display: flex;
+    justify-content: space-evenly;
+    font-weight: bold;
+}
+
+div.ligne > div{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+div.ligne::after{
+    display: block;
+    content: "";
+    width: 80%;
+    height: 2px;
+    margin: auto;
+    background: grey;
+}
+
+div.ligne:last-of-type:after{
+    content: none;
+}

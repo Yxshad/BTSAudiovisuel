@@ -1,0 +1,72 @@
+div.filtres{
+    display: flex;
+    align-items: center;
+    width: calc(20% + 50px);
+    transition: all 0.2s ease;
+    transform: translate(calc(-100% + 50px), 0);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    z-index:11
+}
+
+div.filtres.afficher{
+    transform: translate(0,0);
+}
+
+.voile{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 10;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.8);
+    top: 0;
+    left: 0;
+}
+
+.voile.afficher{
+    display: block;
+}
+
+div.filtres form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: grey;
+    padding: 10px;
+    padding-right: 30px;
+    width: calc(100% - 90px);
+    height: 100%;
+    justify-content: center;
+}
+
+div.filtres .afficherFiltres{
+    background: grey;
+    font-size: 2.5em;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    align-content: center;
+    border-radius: 0px 50px 50px 0;
+    border: 0;
+}
+
+a.video{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    padding: 25px 0;
+}
+
+a.video:hover{
+    transform: scale(1);
+    background: #EEE;
+}
+
+a.video .miniature{
+    background: grey;
+    border-radius: 20px;
+    width: 300px;
+    height: 150px;
+}

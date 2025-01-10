@@ -1,0 +1,41 @@
+h1, h2,
+.bouton{
+    text-align: center;
+}
+
+.bouton a{
+    padding: 20px;
+    background: red;
+    color: #fff;
+    border-radius: 40px;
+    margin: 25px 0;
+    display: inline-block;
+}
+
+.logs{
+    border: 2px solid black;
+    border-radius: 40px;
+}
+
+.nomColonnes,
+.ligne > div{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.nomColonnes{
+    font-weight: bold;
+}
+
+.ligne::after{
+    content: "";
+    width: 80%;
+    height: 2px;
+    display: block;
+    background: grey;
+    place-self: center;
+}
+
+.ligne:last-of-type::after{
+    content: none;
+}

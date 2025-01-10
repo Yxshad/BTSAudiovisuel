@@ -1,0 +1,26 @@
+body{
+    background: #EEE;
+}
+
+body > div.container > div{
+    width: 70%;
+    border: 2px solid black;
+    border-radius: 20px;
+    margin: auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #FFF;
+}
+
+.profile_picture{
+    width: 60px;
+    margin: auto;
+}
+
+.username,
+.password,
+.confirmer{
+    text-align: center;
+}

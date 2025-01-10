@@ -1,0 +1,49 @@
+h1{
+    text-align: center;
+}
+
+.colonnes{
+    display: flex;
+    gap: 20px;
+}
+
+.colonnes .colonne-1{
+    width: 65%;
+}
+
+.colonnes .colonne-2{
+    width: 35%;
+}
+
+.video{
+    height: 300px;
+    background: grey;
+    border-radius: 20px;
+}
+
+.meta-editoriale,
+.promotion,
+.projet{
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 40px;
+}
+
+.boutons{
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    text-align: center;
+}
+
+.boutons a{
+    padding: 10px;
+    border-radius: 20px;
+    width: 90px;
+    display: block;
+}
+
+a.confirmer{
+    background: red;
+    color: #fff;
+}
