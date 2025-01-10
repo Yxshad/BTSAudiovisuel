@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     pure-ftpd \
-    && docker-php-ext-install pdo pdo_mysql mysqli ftp zip curl
+    && docker-php-ext-install pdo pdo_mysql mysqli ftp zip curl pcntl
 
 # Activer le module Apache rewrite
 RUN a2enmod rewrite
@@ -31,10 +31,11 @@ COPY ./racine /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-
-
-
+# Vérifier la version de ffmpeg
 RUN ffmpeg -version
+
+# Vérifier l'activation de PCNTL
+RUN php -m | grep pcntl || echo "PCNTL non activé"
 
 # Exposer le port 80    
 EXPOSE 80
