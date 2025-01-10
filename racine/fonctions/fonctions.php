@@ -154,8 +154,8 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
             exit();
 		}
 		
-		decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
-		convertirVideo($video[MTD_TITRE]);
+		traiterVideo($video[MTD_TITRE], $video[MTD_DUREE]);
+
 		fusionnerVideo($video[MTD_TITRE]);
 
 		// Forcer l'extension à .mp4

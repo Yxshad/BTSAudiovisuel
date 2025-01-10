@@ -54,92 +54,81 @@ function recupererMetadonnees($meta, $fichier){
  * Fonction qui permet de découper une vidéo située dans un espace local en plusieurs fragments
  * Prend en paramètre le titre et la durée d'une vidéo
  */
-function decouperVideo($titre, $duree) {
-    
+function traiterVideo($titre, $duree) {
+    // Démarrer le timer
+    $startTime = microtime(true);
+
     $total = formaterDuree($duree);
-    
-    // Vérifier si la durée totale est inférieure à 100 secondes
+
     if ($total < 100) {
-        $dureePartie = 2; // Durée de chaque partie en secondes
-        $nombreParties = ceil($total / $dureePartie); // Nombre total de parties
+        $dureePartie = 2;
+        $nombreParties = ceil($total / $dureePartie);
     } else {
-        $nombreParties = 100; // Diviser en 100 parties
-        $dureePartie = $total / $nombreParties; // Durée de chaque partie
+        $nombreParties = 100;
+        $dureePartie = $total / $nombreParties;
     }
-    // Créer le dossier de sortie
-    $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-    creerDossier($chemin_dossier, false);
-    for ($i = 0; $i < $nombreParties; $i++) {
-        // Calculer le temps de début pour chaque partie
-        $start_time = $i * $dureePartie;
-        // Formater le temps de début avec une précision correcte
-        $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
-        // Déterminer la durée effective de la partie (dernier segment peut être plus court)
-        $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
-        // Chemin de sortie pour l'extrait
-        if (substr($titre, -1) == "4" ) {
-            $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
-        } else{
-            $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
-        }
-        // Construire la commande ffmpeg
-        $command = "ffmpeg -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
-                   " -ss " . $start_time_formatted .
-                   " -t " . $current_part_duration .
-                   " -c copy \"" . $output_path . "\" -y";
-        // Exécuter la commande ffmpeg
-        exec($command, $output, $return_var);
-        // #RISQUE
-        if ($return_var == 1) {
-            ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
-        }
-    }
-    // Supprimer le fichier original
-    unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
-}
 
-
-
-/**
- * Fonction qui converti l'ensemble des parties de vidéo situées dans URI_VIDEOS_EN_ATTENTE_DE_CONVERSION et les place dans URI_VIDEOS_EN_COURS_DE_CONVERSION (à upload)
- * Prend en paramètre une $vidéo
- */
-function convertirVideo($video){
-    // Chemin pour accéder aux dossiers des vidéos
-    $chemin_dossier_origine = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $video . '_parts';
-    $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $video . "_parts";
-    // Création du dossier qui va stocker les morceaux de videos compressées    
+    $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
     creerDossier($chemin_dossier_destination, false);
-    // On récupère toutes les morceaux de vidéos à convertir
-    $files = scandir($chemin_dossier_origine);
-    // Pour chaque fichier on le converti en MPEG
-    foreach ($files as $file) {
-        if($file != '.' && $file != '..'){
-            $chemin_fichier_origine = $chemin_dossier_origine . '/' . $file;
-            $chemin_fichier_destination = $chemin_dossier_destination . '/' . pathinfo($file, PATHINFO_FILENAME) . '.mp4';
-            
-            // Commande pour convertir la vidéo avec des paramètres de qualité très réduits
-            $command = "ffmpeg -i \"$chemin_fichier_origine\" " .
-                       "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
-                       "-c:a aac -b:a 64k " .                      // Bitrate audio réduit à 64 kbps
-                       "-movflags +faststart " .                   // Optimisation pour le streaming
-                       "\"$chemin_fichier_destination\"";
-            exec($command, $output, $return_var);
-            if ($return_var == 1) {
-                ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($i + 1)."de la vidéo $titre.");
+
+    $maxParallelProcesses = shell_exec('nproc') ?: 8;
+    $processes = [];
+
+    for ($i = 0; $i < $nombreParties; $i++) {
+        $start_time = $i * $dureePartie;
+        $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
+        $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
+
+        $input_path = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre;
+        $output_path = $chemin_dossier_destination . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
+
+        $command = "ffmpeg -i \"$input_path\" " .
+                   "-ss $start_time_formatted " .
+                   "-t $current_part_duration " .
+                   "-c:v libx264 -preset ultrafast -crf 35 " .
+                   "-c:a aac -b:a 64k " .
+                   "-movflags +faststart " .
+                   "\"$output_path\" -y";
+
+        // Lancer le processus avec proc_open
+        $descriptors = [
+            0 => ['pipe', 'r'], // stdin
+            1 => ['pipe', 'w'], // stdout
+            2 => ['pipe', 'w'], // stderr
+        ];
+        $process = proc_open($command, $descriptors, $pipes);
+
+        if (is_resource($process)) {
+            $processes[] = $process;
+
+            // Vérifier si trop de processus sont en cours
+            if (count($processes) >= $maxParallelProcesses) {
+                foreach ($processes as $p) {
+                    proc_close($p);
+                }
+                $processes = [];
             }
         }
     }
-    // On supprime le dossier des morceaux de vidéos à convertir 
-    $files = scandir($chemin_dossier_origine);
-    foreach ($files as $file) {
-        if ($file != "." && $file != "..") {
-            unlink($chemin_dossier_origine . "/" . $file);
-        }
-        
+
+    // Attendre la fin des processus restants
+    foreach ($processes as $p) {
+        proc_close($p);
     }
-    rmdir($chemin_dossier_origine);
+
+    // Supprimer le fichier original
+    $originalFile = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre;
+    if (file_exists($originalFile)) {
+        unlink($originalFile);
+    } else {
+        ajouterLog(LOG_WARNING, "Le fichier original $titre n'existe pas ou a déjà été supprimé.");
+    }
+
+    $endTime = microtime(true);
+    $executionTime = $endTime - $startTime;
+    echo "Traitement terminé en " . round($executionTime, 2) . " secondes.\n";
 }
+
 
 /**
  * Fonction qui permet de fisionner tous les morceaux d'une vidéo en un seul fichier
