@@ -14,11 +14,19 @@
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
 <?php
+<<<<<<< HEAD
     require_once '../ressources/Templates/header.php';
     require_once '../fonctions/fonctions.php';
     require_once '../fonctions/ftp.php';
     require_once '../ressources/constantes.php';
     require_once '../fonctions/modele.php';
+=======
+    require '../ressources/Templates/header.php';
+    require '../fonctions/fonctions.php';
+    require '../fonctions/ftp.php';
+    require '../ressources/constantes.php';
+?>
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
 
     // Récupération de l'URI NAS de la vidéo
     if (isset($_GET['v'])) {
@@ -81,8 +89,13 @@
 
     <div class="colonnes">
         <div class="colonne-1">
+<<<<<<< HEAD
             <div class="img">
                 <img src="<?php echo $cheminMiniature; ?>" alt="Miniature de la vidéo" class="imageMiniature">
+=======
+            <div class='miniature'>
+                <img src=<?php  ?> alt='Miniature de la vidéo' class='imageMiniature'/>
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
             </div>
             <h2><?php echo $titre; ?></h2>
             <p><strong>Durée :</strong> <?php echo $video['mtd_tech_duree']; ?></p>

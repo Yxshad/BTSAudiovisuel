@@ -27,7 +27,11 @@ include '../ressources/Templates/header.php';
                 <div class="commande">
                     <p>Commande de conversion</p>
                     <input type="text" placeholder="ffmpeg -i $video 2>&1">
+<<<<<<< HEAD
                     <a class="btn" onclick="lancerConversion()">Lancer conversion</a>
+=======
+                    <a class="btn" onclick="lancerConvertion()">Lancer conversion</a>
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
                 </div>
                 
             </div>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 // #RISQUE : Dégager ce truc DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -71,6 +72,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 
+=======
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
 //Fonctions spécifiques à la page home.php
 function affichageFiltres(){
     document.querySelector('.afficherFiltres').addEventListener('click', (e) => {
@@ -147,11 +150,16 @@ function affichageSousMenu(){
     }
 }
 
+<<<<<<< HEAD
 function lancerConversion() {
+=======
+function lancerConvertion() {
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         console.log(this.responseText);
     }
+<<<<<<< HEAD
     xhttp.open("POST", "../fonctions/controleur.php");
     
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -168,4 +176,11 @@ function scanDossierDecoupeVideo() {
     
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhttp.send("action=scanDossierDecoupeVideo");
+=======
+    xhttp.open("POST", "../fonctions/fonctions.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhttp.send("action=lancerConvertion");
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
 }

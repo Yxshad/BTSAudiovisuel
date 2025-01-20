@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php 
     session_start();
     require_once '../fonctions/controleur.php';
@@ -11,6 +12,9 @@
     $mtdEdito = $infosVideo["mtdEdito"];
 ?>
 
+=======
+<?php session_start(); ?>
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -28,6 +32,7 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
 <?php
+<<<<<<< HEAD
     require_once '../ressources/Templates/header.php';
 ?>
 <div class="container">
@@ -38,6 +43,44 @@
 </div>
     <h1 class="titre"><?php echo $nomFichier; ?></h1>
     <h2><?php echo $titreVideo; ?></h2>
+=======
+    require '../ressources/Templates/header.php';
+    require '../fonctions/fonctions.php';
+    require '../fonctions/ftp.php';
+    require '../ressources/constantes.php';
+    require '../fonctions/ffmpeg.php';
+
+    //Récupération de l'URI NAS de la vidéo
+    if (isset($_POST['uriNAS']) && isset($_POST['cheminLocalComplet'])) {
+        $uriNAS = $_POST['uriNAS'];
+        $cheminLocalComplet = $_POST['cheminLocalComplet'];
+    }
+
+    //Téléchargement de la vidéo
+        //On récupère le chemin complet de la miniature, on le remplace par celui de la vidéo
+        $cheminCompletMiniature = $cheminLocalComplet;
+        $miniature = basename($cheminLocalComplet);
+        $fichierVideo = trouverNomVideo($miniature);
+
+        //Pour le chemin local, on retire de $cheminLocalComplet le nom du fichier miniature
+        $cheminLocal = dirname($cheminLocalComplet);
+
+        $cheminDistantComplet = $uriNAS . $fichierVideo;
+        $cheminLocalComplet = $cheminLocal . '/' . $fichierVideo;
+
+        $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+        telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
+        ftp_close($conn_id);
+?>
+
+<div class="container">
+    <div class="lecteurVideo">
+    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminCompletMiniature; ?>>
+        <source src="<?php echo $cheminLocalComplet; ?>" type="video/mp4"/>
+    </video>
+</div>
+    <h1 class="titre">Titre de la video</h1>
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
     <div class="colonnes">
         <div class="colonne-1">
             <p class="description"><?php echo $mtdTech["Description"]; ?></p>
@@ -71,7 +114,11 @@
             
         </div>
         <div class="colonne-2">
+<<<<<<< HEAD
             <a href="<?php echo $cheminLocal; ?>" download="<?php echo $video["mtd_tech_titre"]; ?>" class="btnVideo">
+=======
+            <a href="./bamboulo.mp4" download="bamboulo.mp4" class="btnVideo">
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/download.webp" alt="">
                 </div>
@@ -107,4 +154,8 @@
     document.addEventListener("DOMContentLoaded", function () {
         initLectureVideo();
     });
+<<<<<<< HEAD
 </script>
+=======
+</script>
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b

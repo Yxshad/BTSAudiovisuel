@@ -4,7 +4,10 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
 	<link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
+=======
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
 	<script src="../ressources/Script/script.js"></script>

@@ -35,6 +35,10 @@
                     </a>
                     <div class="sousMenu">
                         <a href="transfert.php">Transfert</a>
+<<<<<<< HEAD
+=======
+                        <a href="fonction_transfert.php">Transfert DEMO</a>
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
                         <a href="sauvegarde.php">Sauvegarde</a>
                         <a href="reconciliation.php">Réconciliation</a>
                         <a href="../ressources/historique.log">Logs</a>
@@ -55,4 +59,8 @@
     document.addEventListener("DOMContentLoaded", function () {
         affichageSousMenu();
     });
+<<<<<<< HEAD
     </script>
+=======
+    </script>
+>>>>>>> 5a6d86a8dcd38a1359e1d573580493a2221e1f3b
