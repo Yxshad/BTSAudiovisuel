@@ -55,48 +55,76 @@ function recupererMetadonnees($meta, $fichier){
  * Prend en paramètre le titre et la durée d'une vidéo
  */
 function decouperVideo($titre, $duree) {
-    
     $total = formaterDuree($duree);
-    
-    // Vérifier si la durée totale est inférieure à 100 secondes
+
+    // Vérifier si la vidéo est trop courte
     if ($total < 100) {
-        $dureePartie = 2; // Durée de chaque partie en secondes
-        $nombreParties = ceil($total / $dureePartie); // Nombre total de parties
-    } else {
-        $nombreParties = 100; // Diviser en 100 parties
-        $dureePartie = $total / $nombreParties; // Durée de chaque partie
+        ajouterLog(LOG_INFO, "Pas de découpage, vidéo trop courte");
+        return;
     }
+
+    // Nombre total de parties à créer
+    $nombreParties = 100;
+    $dureePartie = $total / $nombreParties;
+
     // Créer le dossier de sortie
     $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
     creerDossier($chemin_dossier, false);
-    for ($i = 0; $i < $nombreParties; $i++) {
-        // Calculer le temps de début pour chaque partie
-        $start_time = $i * $dureePartie;
-        // Formater le temps de début avec une précision correcte
-        $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
-        // Déterminer la durée effective de la partie (dernier segment peut être plus court)
-        $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
-        // Chemin de sortie pour l'extrait
-        if (substr($titre, -1) == "4" ) {
-            $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
-        } else{
-            $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
-        }
-        // Construire la commande ffmpeg
-        $command = "ffmpeg -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
-                   " -ss " . $start_time_formatted .
-                   " -t " . $current_part_duration .
-                   " -c copy \"" . $output_path . "\" -y";
-        // Exécuter la commande ffmpeg
-        exec($command, $output, $return_var);
-        // #RISQUE
-        if ($return_var == 1) {
-            ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
+    ajouterLog(LOG_SUCCESS, "Création du dossier");
+    // Nombre de processus fils à créer
+    $nombreProcessus = 4; // Diviser les tâches en 4 processus fils
+    $partiesParProcessus = ceil($nombreParties / $nombreProcessus);
+
+    for ($p = 0; $p < $nombreProcessus; $p++) {
+        $pid = pcntl_fork(); // Créer un processus fils
+        ajouterLog(LOG_SUCCESS, "Création d'un processus");
+        if ($pid == -1) {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de la création du processus");
+            die("Erreur de fork");
+        } elseif ($pid == 0) {
+            // Processus fils : Gérer sa part des découpages
+            $startPartie = $p * $partiesParProcessus;
+            $endPartie = min($startPartie + $partiesParProcessus, $nombreParties);
+
+            for ($i = $startPartie; $i < $endPartie; $i++) {
+                $start_time = $i * $dureePartie;
+                $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
+
+                // Déterminer la durée effective de la partie
+                $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
+
+                // Chemin de sortie pour l'extrait
+                $extension = (substr($titre, -1) == "4") ? '.mp4' : '.mxf';
+                $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . $extension;
+
+                // Commande ffmpeg
+                $command = "ffmpeg -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
+                           " -ss " . $start_time_formatted .
+                           " -t " . $current_part_duration .
+                           " -c copy \"" . $output_path . "\" -y";
+
+                ajouterLog(LOG_SUCCESS, "Partie " . $i+1 . " découpé" );
+
+                // Exécuter la commande ffmpeg
+                exec($command, $output, $return_var);
+
+                // Vérifier les erreurs
+                if ($return_var != 0) {
+                    ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie " . ($i + 1) . " de la vidéo $titre.");
+                }
+            }
+            // Le processus fils termine son exécution
+            exit(0);
         }
     }
-    // Supprimer le fichier original
+    ajouterLog(LOG_SUCCESS, "attente des procs fils");
+    // Processus parent : attendre la fin de tous les processus fils
+    while (pcntl_wait($status) > 0);
+    ajouterLog(LOG_SUCCESS, "suppression du dossier");
+    // Supprimer le fichier original après le découpage
     unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
 }
+
 
 
 
