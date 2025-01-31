@@ -101,7 +101,9 @@ function creerDossierFTP($conn_id, $cheminDossier) {
 function listerFichiersCompletFTP($conn_id, $repertoire) {
     $pile = [$repertoire];
     $fichiersComplet = [];
-    while (!empty($pile)) {
+    //while (!empty($pile)) {
+    // #RISQUE : PROD, on ne récupère que les 2 premiers fichiers pour ne pas surcharger
+    while (!empty($pile) && count($fichiersComplet) < 2){
         $dossierCourant = array_pop($pile); 
         $elements = ftp_nlist($conn_id, $dossierCourant);
         foreach ($elements as $element) {
