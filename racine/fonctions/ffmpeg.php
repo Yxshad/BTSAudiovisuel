@@ -8,7 +8,7 @@
  */
 function recupererMetadonneesViaVideoLocale($fichier, $URI_ESPACE_LOCAL){
 	$fichier_source = $URI_ESPACE_LOCAL . '/' . $fichier;
-    $command = "ffmpeg -i $fichier_source 2>&1";
+    $command = URI_FFMPEG . " -i $fichier_source 2>&1";
     exec($command, $output);
     $meta = implode($output);
     return recupererMetadonnees($meta, $fichier);
@@ -22,7 +22,7 @@ function recupererMetadonneesViaVideoLocale($fichier, $URI_ESPACE_LOCAL){
  */
 function recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier) {
     $fileUrl = "ftp://$ftp_user:$ftp_pass@$ftp_server/$cheminFichier/$nomFichier";
-    $command = "ffmpeg -i \"$fileUrl\" 2>&1";
+    $command = URI_FFMPEG . " -i \"$fileUrl\" 2>&1";
     exec($command, $output);
     $meta = implode($output);
     return recupererMetadonnees($meta, $nomFichier);
@@ -83,7 +83,7 @@ function decouperVideo($titre, $duree) {
             $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
         }
         // Construire la commande ffmpeg
-        $command = "ffmpeg -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
+        $command = URI_FFMPEG . " -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
                    " -ss " . $start_time_formatted .
                    " -t " . $current_part_duration .
                    " -c copy \"" . $output_path . "\" -y";
@@ -119,7 +119,7 @@ function convertirVideo($video){
             $chemin_fichier_destination = $chemin_dossier_destination . '/' . pathinfo($file, PATHINFO_FILENAME) . '.mp4';
             
             // Commande pour convertir la vidéo avec des paramètres de qualité très réduits
-            $command = "ffmpeg -i \"$chemin_fichier_origine\" " .
+            $command = URI_FFMPEG . " -i \"$chemin_fichier_origine\" " .
                        "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
                        "-c:a aac -b:a 64k " .                      // Bitrate audio réduit à 64 kbps
                        "-movflags +faststart " .                   // Optimisation pour le streaming
@@ -165,7 +165,7 @@ function fusionnerVideo($video){
     $fileListPath = $chemin_dossier_origine . '/file_list.txt';
     file_put_contents($fileListPath, $fileListContent);
     $outputFile = $chemin_dossier_destination . "/" . $video;
-    $command = "ffmpeg -v verbose -f concat -safe 0 -i " . $fileListPath .
+    $command = URI_FFMPEG . " -v verbose -f concat -safe 0 -i " . $fileListPath .
                " -c copy " . substr($outputFile, 0, -3) . "mp4";
     exec($command, $output, $returnVar);
 
@@ -195,7 +195,7 @@ function genererMiniature($video, $duree){
 
     $miniature = $videoSansExtension . SUFFIXE_MINIATURE_VIDEO;
 
-    $command = "ffmpeg -i " . $video . 
+    $command = URI_FFMPEG . " -i " . $video . 
                " -ss " . $timecode . 
                " -vframes 1 " . $miniature;
         

@@ -33,6 +33,10 @@
     const BD_USER = 'myuser';
     const BD_PASSWORD = 'mypassword';
 
+    //CONSTANTE POUR l'URI DE FFMPEG
+    const URI_FFMPEG = "ffmpeg";
+
+
     //CONSTANTES DES METADONNEES
     const MTD_TITRE = 'Titre';
     const MTD_FPS = 'FPS';
