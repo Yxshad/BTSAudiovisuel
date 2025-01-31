@@ -12,29 +12,29 @@
     const SUFFIXE_VIDEO = '.mp4';
 
     //CONSTANTES DES CONNEXIONS FTP
-    const NAS_PAD = 'NAS_PAD';
-    const LOGIN_NAS_PAD = 'user1';
-    const PASSWORD_NAS_PAD = 'pass1';
+    const NAS_PAD = '192.168.10.8';
+    const LOGIN_NAS_PAD = 'btsplay';
+    const PASSWORD_NAS_PAD = 'btsplay';
 
-    const NAS_ARCH = 'NAS_ARCH';
-    const LOGIN_NAS_ARCH = 'user2';
-    const PASSWORD_NAS_ARCH = 'pass2';
+    const NAS_ARCH = '192.168.10.9';
+    const LOGIN_NAS_ARCH = 'btsplay';
+    const PASSWORD_NAS_ARCH = 'btsplay';
 
     const NAS_DIFF = 'NAS_DIFF';
-    const LOGIN_NAS_DIFF = 'user4';
-    const PASSWORD_NAS_DIFF = 'pass4';
+    const LOGIN_NAS_DIFF = 'btsplay';
+    const PASSWORD_NAS_DIFF = 'btsplay';
 
     //CONSTANTES DE LA BASE DE DONNEES
     // #RISQUE : Changement des informations de la base de données
 
-    const BD_HOST = 'mysql_BTSPlay';
+    const BD_HOST = 'localhost';
     const BD_PORT = '3306:3306';
-    const BD_NAME = 'mydatabase';
-    const BD_USER = 'myuser';
-    const BD_PASSWORD = 'mypassword';
+    const BD_NAME = 'btsplay_bd';
+    const BD_USER = 'BTSPlay_ADMIN';
+    const BD_PASSWORD = 'BTSPlay_ADMIN';
 
     //CONSTANTE POUR l'URI DE FFMPEG
-    const URI_FFMPEG = "ffmpeg";
+    const URI_FFMPEG = "../ressources/lib/ffmepg/ffmpeg.exe";
 
 
     //CONSTANTES DES METADONNEES
