@@ -15,6 +15,7 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
         ajouterLog(LOG_FAIL, "Échec de la connexion au serveur FTP $ftp_server pour l'utilisateur $ftp_user.");
         exit();
     }
+    ftp_pasv($conn_id, true);
     return $conn_id;
 }
 
