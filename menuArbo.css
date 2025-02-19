@@ -1,0 +1,55 @@
+.main-menuArbo{
+    background: gray;
+    position: fixed;
+    height: 100vh;
+    width: 50%;
+    left: -50%;
+    top: 0;
+    transition: all 0.2s ease-in-out;
+    z-index: 11;
+}
+
+.main-menuArbo.ouvert{
+    left: 0%;
+}
+
+.menuArbo{
+    margin-top: 90px;
+    
+}
+
+.menuArbo div,
+.main-menuArbo a{
+    display: block;
+    padding-left: 25px;
+}
+
+.main-menuArbo a:hover,
+.main-menuArbo a:focus{
+    transform: none;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.main-menuArbo button{
+    position: absolute;
+    right: -45px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 50px;
+}
+
+.dossier::before {
+    background-image: url("../Images/closed-file.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    content: " ";
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+}
+
+.dossier.ouvert::before {
+    background-image: url("../Images/open-file.png");
+}
