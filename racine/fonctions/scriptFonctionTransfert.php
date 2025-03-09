@@ -177,7 +177,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
             $fin = min(($i + 1) * $elementsParProcessus, $tailleDuTableau);
 
             for ($j = $debut; $j < $fin; $j++) {
-                usleep(50000);
+                usleep(100000);
                 $video = $COLLECT_STOCK_LOCAL[$j];
                 //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " travaille sur la vidéo : " . $video[MTD_TITRE]);
 
