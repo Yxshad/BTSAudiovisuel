@@ -29,10 +29,14 @@ RUN a2ensite 000-default.conf
 # Copier les fichiers PHP
 COPY ./racine /var/www/html
 
-# Copier backup.php et constantes.php dans les bons dossiers
-COPY ./racine/fonctions/backup.php /var/www/html/fonctions/backup.php
-COPY ./racine/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY ./racine/ressources/constantes.php /var/www/html/ressources/constantes.php
+# Ajouter la tâche cron dans un fichier temporaire
+RUN echo "00 22 * * * root php /var/www/html/fonctions/backup.php >> /var/log/backup.log 2>&1" > /etc/cron.d/backup-cron
+
+# Donner les bons droits et recharger crontab
+RUN chmod 0644 /etc/cron.d/backup-cron && crontab /etc/cron.d/backup-cron
+
+# Assurer que cron tourne bien
+RUN touch /var/log/cron.log
 
 # Donner les droits nécessaires
 RUN chown -R www-data:www-data /var/www/html \
