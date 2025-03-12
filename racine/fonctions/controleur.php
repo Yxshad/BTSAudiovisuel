@@ -58,6 +58,14 @@ function checkHeader(){
         if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
         }
+        if($_POST["action"] == "changeWhenToSaveDB"){
+            //DATA
+            $minute = $_POST['minute'] ?? '*';
+            $heure = $_POST['heure'] ?? '*';
+            $jour = $_POST['day'] ?? '*';
+            $month = $_POST['month'] ?? '*';
+            controleurChangeDBDumpLauncher($minute, $heure, '*', $month, $jour);
+        }
         if($_POST["action"] == "createDatabaseSave"){
             controleurcreateDBDumpLauncher();
         }
@@ -538,6 +546,10 @@ function controleurLancerFonctionTransfert(){
  */
 function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
+}
+
+function controleurChangeDBDumpLauncher($minute = '*', $heure = '*', $annee = '*', $mois = '*', $jour = '*'){
+    changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour);
 }
 
 ?>

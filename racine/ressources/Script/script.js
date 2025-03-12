@@ -206,6 +206,28 @@ function createDatabaseSave() {
     xhttp.send("action=createDatabaseSave");
 }
 
+function changeDatabaseSaveTime() {
+    let selectedMonth = document.getElementById("select_Month").value;
+    let selectedDay = document.getElementById("select_Day").value;
+    let tempsLancement = document.getElementById("tempsLancement").value;
+    let heure = tempsLancement[0]+tempsLancement[1];
+    let minute = tempsLancement[3]+tempsLancement[4];
+    console.log(tempsLancement);
+    fetch("../fonctions/controleur.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "action=changeWhenToSaveDB&month=" + selectedMonth + "&day=" + selectedDay + "&heure=" + heure + "&minute=" + minute
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log("Réponse du serveur:", data);
+        alert("Paramètres enregistrés !");
+    })
+    .catch(error => console.error("Erreur:", error));
+}
+
 function scanDossierDecoupeVideo() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {

@@ -530,4 +530,27 @@ function createDatabaseSave(){
 	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j-m-Y_H-i-s").".", NOM_FICHIER_LOG_SAUVEGARDE);
 }
 
+/**
+ * \fn 
+ */
+function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
+    $file = '/etc/crontab'; // Remplacez par le nom de votre fichier
+    exec("docker exec -it php_BTSPlay sudo chown www-data:www-data /etc/crontab");
+    // Lire tout le fichier dans un tableau
+    $lines = file($file, FILE_IGNORE_NEW_LINES);
+
+    // Modifier la dernière ligne
+    if (!empty($lines)) {
+        $lines[count($lines) - 1] = "$minute  $heure    $annee $mois $jour  root    php /var/www/html/fonctions/backup.php >> /var/log/backup.log";
+    }
+
+    // Écrire le fichier mis à jour
+    file_put_contents($file, implode("\n", $lines));
+
+    exec("docker exec -it php_BTSPlay service cron restart");
+
+    ajouterLog(LOG_INFORM, "Date de sauvegarde changée!");
+    echo "Dernière ligne modifiée avec succès !";
+}
+
 ?>
