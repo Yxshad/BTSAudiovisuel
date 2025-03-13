@@ -531,7 +531,9 @@ function createDatabaseSave(){
 }
 
 /**
- * \fn 
+ * \fn changeWhenToSaveDB
+ * \brief Permet de changer l'heure de lancement de la sauvegarde
+ * 
  */
 function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
     $file = '/etc/crontab'; // Remplacez par le nom de votre fichier
@@ -541,7 +543,7 @@ function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
 
     // Modifier la dernière ligne
     if (!empty($lines)) {
-        $lines[count($lines) - 1] = "$minute  $heure    $annee $mois $jour  root    php /var/www/html/fonctions/backup.php >> /var/log/backup.log";
+        $lines[count($lines) - 1] = "$minute $heure   $annee $mois $jour   root    php /var/www/html/fonctions/backup.php >> /var/log/backup.log";
     }
 
     // Écrire le fichier mis à jour

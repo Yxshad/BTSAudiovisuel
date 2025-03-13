@@ -3,7 +3,7 @@ FROM php:8.3-apache
 
 # Installer les extensions PHP et outils nécessaires
 RUN apt-get update && apt-get install -y \
-    cron supervisor nano grep \
+    cron sudo supervisor nano grep \
     ffmpeg \
     libzip-dev \
     libcurl4-openssl-dev \
@@ -29,9 +29,6 @@ RUN a2ensite 000-default.conf
 # Copier les fichiers PHP
 COPY ./racine /var/www/html
 
-# Ajouter la tâche cron dans un fichier temporaire
-RUN echo "00 22 * * * root php /var/www/html/fonctions/backup.php >> /var/log/backup.log 2>&1" > /etc/cron.d/backup-cron
-
 # Donner les bons droits et recharger crontab
 RUN chmod 0644 /etc/cron.d/backup-cron && crontab /etc/cron.d/backup-cron
 
@@ -45,7 +42,7 @@ RUN chown -R www-data:www-data /var/www/html \
 # Exposer le port 80    
 EXPOSE 80
 
-RUN echo "* * * * * root echo 'CRON test' >> /var/log/cron.log 2>&1" >> /etc/crontab
+RUN echo "0 21	* * *	root    php /var/www/html/fonctions/backup.php >> /var/log/backup.log" >> /etc/crontab
 
 
 # Lancer cron en arrière-plan avec Apache
