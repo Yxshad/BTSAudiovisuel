@@ -98,10 +98,6 @@ function checkHeader(){
         if($_POST["action"] == "mettreAJourParametres"){
             controleurMettreAJourParametres();
         }
-        // if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
-        //     echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
-        //     exit(0);
-        // }
     }
 }
 checkHeader();
@@ -606,13 +602,8 @@ function controleurcreateDBDumpLauncher(){
 
 function controleurMettreAJourParametres(){
     mettreAJourParametres();
-    
-    // Forcer un refresh de la page après la mise à jour
     header("Refresh:0");
     exit();
-
-    // Afficher un message de succès
-    $successMessage = "Les paramètres ont été mis à jour avec succès!";
 }
 
 function chargerPopup($nouveauTitre = null, $nouveauTexte = null){

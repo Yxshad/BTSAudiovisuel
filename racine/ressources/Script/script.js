@@ -592,6 +592,10 @@ function redirection(page){
     window.location.href = "./" + page;
 }
 
+function sendForm(formulaire){
+    document.querySelector(formulaire).submit();
+}
+
 function lancerDiffusion(uri_nas_pad){
     console.log(uri_nas_pad)
     const xhttp = new XMLHttpRequest();

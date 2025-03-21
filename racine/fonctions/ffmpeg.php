@@ -97,6 +97,8 @@ function traiterVideo($titre, $duree) {
     $total = formaterDuree($duree);
 
     $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
+
+    ajouterLog(LOG_CRITICAL, "Création du dossier : $chemin_dossier_conversion.");
     creerDossier($chemin_dossier_conversion, false);
 
     // Vérifier si la durée totale est inférieure à 100 secondes
@@ -143,7 +145,7 @@ function traiterVideo($titre, $duree) {
                       " -reset_timestamps 1" .
                       " -segment_format mp4" .
                       " -movflags +faststart" .
-                      " -c:v libx264 -pix_fmt yuv420p -crf 35 -preset fast" .
+                      " -c:v libx264 -pix_fmt yuv420p -crf 35 -preset ultrafast" .
                       " -c:a aac -b:a 64k -ac 2 " .
                       " -movflags +faststart" .
                       " -map 0:v:0 -map 0:a:0" .
@@ -157,36 +159,12 @@ function traiterVideo($titre, $duree) {
             ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
             $chemin_fichier_origine . " : " . implode("\n", $output));
             //exit();
+        }else{
+            // on ne supprime la vidéo de base que quand la vidéo a bien été compresser 
+            unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
         }
-    }
-}
 
-/**
- * \fn convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $titre, $i)
- * \brief Fonction qui permet de convertir une vidéo passée en paramètre
- * \param titre - nom de la vidéo 
- * \param duree - Duree de la vidéo
- * \return liste - Liste des métadonnées techniques de la vidéo
- */
-function convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $titre, $i, $partieUnique){
-    if($partieUnique){
-        $chemin_fichier_destination = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
-    }
-    else{
-        $chemin_fichier_destination = $chemin_dossier_conversion. '/' . $titre . '_part_' . sprintf('%03d', $i) . '.mp4';
-    }
-    $command = URI_FFMPEG." -i \"$chemin_fichier_origine\" " .
-                "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
-                "-c:a aac -b:a 64k -ac 2 -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
-                "-movflags +faststart " .                   // Optimisation pour le streaming
-                "-vf format=yuv420p " .
-                "\"$chemin_fichier_destination\"";
-    //exec($command, $output, $return_var);
-    exec($command . " 2>&1", $output, $return_var);
-    if ($return_var == 1) {
-        ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
-        $chemin_fichier_origine . " : " . implode("\n", $output));
-        //exit();
+        
     }
 }
 
@@ -220,17 +198,19 @@ function fusionnerVideo($video){
            " -c:v libx264 -preset ultrafast -crf 35 -c:a aac -b:a 64k -async 1 -fflags +genpts " .
            substr($outputFile, 0, -3) . "mp4";
     exec($command, $output, $returnVar);
-
-
-    // On supprime le dossier qui contient les morceaux convertis
-    $files = scandir($chemin_dossier_origine);
-    foreach ($files as $file) {
-        if ($file != "." && $file != "..") {
-            unlink($chemin_dossier_origine . "/" . $file);
+    if ($return_var != 1) {
+        // On supprime le dossier qui contient les morceaux convertis
+        $files = scandir($chemin_dossier_origine);
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                unlink($chemin_dossier_origine . "/" . $file);
+            }
         }
+        rmdir($chemin_dossier_origine);
+        return 1;
+    }else{
+        return 0;
     }
-    rmdir($chemin_dossier_origine);
-    return 1;
 }
 
 /**
